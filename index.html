@@ -5,338 +5,139 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>To‑Do List 📝</title>
   <style>
-    :root{
-      --bg:#0f1220;
-      --card:#171a2b;
-      --muted:#8b90a8;
-      --text:#e8ebff;
-      --accent:#6c8cff;
-      --accent-2:#4be1b0;
-      --danger:#ff6b6b;
-      --shadow: 0 8px 24px rgba(0,0,0,.35);
-      --radius: 12px;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: radial-gradient(1200px 800px at 80% -20%, #1c2040 0%, transparent 60%), var(--bg);
-      color: var(--text);
-      display:flex; align-items:center; justify-content:center; padding:24px;
+    .app {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.1);
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
     }
-    .app{
-      width:100%; max-width:720px; background:linear-gradient(180deg, #191d31 0%, #14182a 100%);
-      border:1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow);
-      overflow:hidden;
+    h1 {
+      margin-top: 0;
+      text-align: center;
     }
-    header{
-      padding:20px 22px; border-bottom:1px solid rgba(255,255,255,.06);
-      display:flex; align-items:center; gap:16px; flex-wrap: wrap; justify-content: space-between;
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-    .title{ font-weight:700; letter-spacing:.3px; display:flex; align-items:center; gap:10px; }
-    .title .badge{ background: rgba(108,140,255,.15); color: var(--accent); padding:4px 10px; border-radius:999px; font-size:12px; }
-    .controls{ display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
-    .input{
-      display:flex; align-items:center; gap:8px; background: var(--card); border:1px solid rgba(255,255,255,.07);
-      padding:10px 12px; border-radius:10px; min-width: 260px; flex:1;
+    .controls input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
     }
-    .input input{
-      background: transparent; border:none; outline: none; color: var(--text); width:100%; font-size:16px;
+    .controls button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #4a7dff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
-    .btn{
-      background: var(--accent); color:white; border:none; padding:10px 14px; border-radius:10px;
-      cursor:pointer; font-weight:600; transition:.2s transform, .2s filter; box-shadow: 0 6px 16px rgba(108,140,255,.35);
+    .controls button:hover {
+      background: #345de0;
     }
-    .btn:hover{ filter: brightness(1.05); transform: translateY(-1px); }
-    .btn.ghost{
-      background: transparent; color: var(--muted); border:1px solid rgba(255,255,255,.10); box-shadow:none;
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
-    .btn.danger{ background: var(--danger); box-shadow: 0 6px 16px rgba(255,107,107,.35); }
-    .toolbar{
-      padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      background: linear-gradient(180deg, rgba(108,140,255,.08), transparent);
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
     }
-    .filters{ display:flex; gap:8px; flex-wrap: wrap; }
-    .chip{
-      padding:6px 10px; border-radius:999px; font-size:13px; cursor:pointer;
-      border:1px solid rgba(255,255,255,.12); color: var(--muted); background: rgba(255,255,255,.02);
-      transition:.2s background, .2s color, .2s border-color;
-      user-select:none;
+    li:last-child {
+      border-bottom: none;
     }
-    .chip.active{ background: rgba(108,140,255,.18); border-color: rgba(108,140,255,.6); color: var(--text); }
-    .counter{ color: var(--muted); font-size:13px; }
-    .list{
-      padding:10px 6px 6px;
-      max-height: 60vh; overflow:auto;
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
     }
-    .empty{
-      text-align:center; color: var(--muted); padding:36px 16px;
+    .task.completed span {
+      text-decoration: line-through;
+      color: #888;
     }
-    .item{
-      display:grid; grid-template-columns: 34px 1fr auto; align-items:center; gap:10px;
-      padding:10px 10px; margin:6px; border-radius:10px; background: var(--card);
-      border:1px solid rgba(255,255,255,.07);
-      transition: background .2s, border-color .2s, transform .05s;
+    .delete {
+      background: none;
+      border: none;
+      color: #ff5c5c;
+      font-size: 18px;
+      cursor: pointer;
     }
-    .item:hover{ border-color: rgba(108,140,255,.45); }
-    .item.completed{ opacity:.85; background: linear-gradient(180deg, #121627, #101425); }
-    .check{
-      width:18px; height:18px; accent-color: var(--accent-2); cursor:pointer;
-    }
-    .text{
-      font-size:16px; line-height:1.4;
-      word-break: break-word;
-    }
-    .text.completed{ text-decoration: line-through; color: var(--muted); }
-    .actions{ display:flex; gap:6px; }
-    .icon-btn{
-      background: transparent; border:1px solid rgba(255,255,255,.12); color: var(--muted);
-      padding:6px 8px; border-radius:8px; cursor:pointer; transition:.15s;
-    }
-    .icon-btn:hover{ color: var(--text); border-color: rgba(255,255,255,.25); }
-    .edit-input{
-      width:100%; background: #0f1324; color: var(--text); border:1px solid rgba(255,255,255,.2);
-      border-radius:8px; padding:8px 10px; font-size:16px;
-    }
-    footer{
-      padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:12px;
-      border-top:1px solid rgba(255,255,255,.06);
-      color: var(--muted); font-size:13px;
-    }
-    @media (max-width:640px){
-      header{ flex-direction: column; align-items: stretch; }
-      .controls{ width:100%; }
-      .input{ width:100%; }
-      .btn.add{ width:100%; }
-      .toolbar{ flex-direction: column; align-items: stretch; }
-      .filters{ justify-content: center; }
-      footer{ flex-direction: column; align-items: flex-start; }
+    .delete:hover {
+      color: #d63030;
     }
   </style>
 </head>
 <body>
-  <main class="app" role="application" aria-label="Lista de tarefas">
-    <header>
-      <div class="title">
-        <h1 style="margin:0; font-size:20px;">To‑Do List 📝</h1>
-        <span class="badge">offline • localStorage</span>
-      </div>
-      <div class="controls" role="group" aria-label="Adicionar tarefa">
-        <div class="input">
-          <span aria-hidden="true">➕</span>
-          <input id="newTask" type="text" placeholder="Escreva uma tarefa e tecle Enter…" autocomplete="off" />
-        </div>
-        <button class="btn add" id="addBtn" title="Adicionar tarefa">Adicionar</button>
-      </div>
-    </header>
-
-    <section class="toolbar">
-      <div class="filters" role="tablist" aria-label="Filtros">
-        <button class="chip active" data-filter="all" role="tab" aria-selected="true">Todas</button>
-        <button class="chip" data-filter="active" role="tab" aria-selected="false">Ativas</button>
-        <button class="chip" data-filter="completed" role="tab" aria-selected="false">Concluídas</button>
-      </div>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <span class="counter" id="counter">0 pendentes</span>
-        <button class="btn ghost" id="toggleAll" title="Marcar tudo">Marcar tudo</button>
-        <button class="btn danger" id="clearCompleted" title="Limpar concluídas">Limpar concluídas</button>
-      </div>
-    </section>
-
-    <section class="list" id="list" aria-live="polite">
-      <div class="empty" id="empty">Nenhuma tarefa ainda. Comece adicionando uma acima.</div>
-    </section>
-
-    <footer>
-      <div>💡 Dica: dê duplo clique no texto para editar.</div>
-      <div>Feito com cuidado — seus dados ficam apenas neste navegador.</div>
-    </footer>
-  </main>
+  <div class="app">
+    <h1>To‑Do List 📝</h1>
+    <div class="controls">
+      <input id="newTask" type="text" placeholder="Digite uma tarefa..." />
+      <button id="addBtn">Adicionar</button>
+    </div>
+    <ul id="list"></ul>
+  </div>
 
   <script>
-    const $ = (s, root=document) => root.querySelector(s);
-    const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
+    const input = document.getElementById('newTask');
+    const addBtn = document.getElementById('addBtn');
+    const list = document.getElementById('list');
 
-    const STORAGE_KEY = 'todo:list:v1';
+    function addTask() {
+      const text = input.value.trim();
+      if (!text) return;
+      
+      const li = document.createElement('li');
+      const taskDiv = document.createElement('div');
+      taskDiv.className = 'task';
 
-    const state = {
-      tasks: [],
-      filter: 'all',
-    };
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.addEventListener('change', () => {
+        taskDiv.classList.toggle('completed', checkbox.checked);
+      });
 
-    // Persistência
-    function load(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(raw){
-          const data = JSON.parse(raw);
-          if(Array.isArray(data)) state.tasks = data;
-        }
-      }catch(e){ /* ignore */ }
-    }
-    function save(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tasks));
-    }
+      const span = document.createElement('span');
+      span.textContent = text;
 
-    // Utilidades
-    const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-    function formatCounter(){
-      const pending = state.tasks.filter(t => !t.completed).length;
-      $('#counter').textContent = pending === 1 ? '1 pendente' : `${pending} pendentes`;
-    }
-    function applyFilter(tasks){
-      switch(state.filter){
-        case 'active': return tasks.filter(t => !t.completed);
-        case 'completed': return tasks.filter(t => t.completed);
-        default: return tasks;
-      }
-    }
-    function updateEmpty(){
-      const list = $('#list');
-      const hasTasks = state.tasks.length > 0 && applyFilter(state.tasks).length > 0;
-      $('#empty').style.display = hasTasks ? 'none' : 'block';
-    }
-
-    // Renderização
-    function render(){
-      const list = $('#list');
-      list.innerHTML = '';
-      const filtered = applyFilter(state.tasks);
-      if(filtered.length === 0){
-        list.appendChild($('#empty'));
-        $('#empty').style.display = 'block';
-      } else {
-        $('#empty').style.display = 'none';
-        filtered.forEach(task => list.appendChild(renderItem(task)));
-      }
-      formatCounter();
-    }
-
-    function renderItem(task){
-      const el = document.createElement('div');
-      el.className = 'item' + (task.completed ? ' completed' : '');
-      el.dataset.id = task.id;
-
-      const check = document.createElement('input');
-      check.type = 'checkbox';
-      check.className = 'check';
-      check.checked = task.completed;
-      check.ariaLabel = 'Concluir tarefa';
-      check.addEventListener('change', () => toggleCompleted(task.id, check.checked));
-
-      const text = document.createElement('div');
-      text.className = 'text' + (task.completed ? ' completed' : '');
-      text.textContent = task.text;
-      text.title = 'Duplo clique para editar';
-      text.addEventListener('dblclick', () => startEdit(task.id, text));
-
-      const actions = document.createElement('div');
-      actions.className = 'actions';
-
-      const editBtn = document.createElement('button');
-      editBtn.className = 'icon-btn';
-      editBtn.title = 'Editar';
-      editBtn.textContent = '✏️';
-      editBtn.addEventListener('click', () => startEdit(task.id, text));
+      taskDiv.appendChild(checkbox);
+      taskDiv.appendChild(span);
 
       const delBtn = document.createElement('button');
-      delBtn.className = 'icon-btn';
-      delBtn.title = 'Excluir';
-      delBtn.textContent = '🗑️';
-      delBtn.addEventListener('click', () => removeTask(task.id));
+      delBtn.className = 'delete';
+      delBtn.textContent = '✖';
+      delBtn.addEventListener('click', () => li.remove());
 
-      actions.append(editBtn, delBtn);
-      el.append(check, text, actions);
-      return el;
-    }
+      li.appendChild(taskDiv);
+      li.appendChild(delBtn);
+      list.appendChild(li);
 
-    // Ações
-    function addTask(text){
-      const trimmed = text.trim();
-      if(!trimmed) return;
-      state.tasks.unshift({ id: uid(), text: trimmed, completed: false });
-      save(); render();
-    }
-    function removeTask(id){
-      state.tasks = state.tasks.filter(t => t.id !== id);
-      save(); render();
-    }
-    function toggleCompleted(id, value){
-      const t = state.tasks.find(t => t.id === id);
-      if(!t) return;
-      t.completed = !!value;
-      save(); render();
-    }
-    function updateText(id, text){
-      const t = state.tasks.find(t => t.id === id);
-      if(!t) return;
-      t.text = text.trim() || t.text;
-      save(); render();
-    }
-    function startEdit(id, textEl){
-      const task = state.tasks.find(t => t.id === id);
-      if(!task) return;
-      const parent = textEl.parentElement;
-      // Substitui texto por input
-      const input = document.createElement('input');
-      input.className = 'edit-input';
-      input.value = task.text;
-      const finish = (commit=true) => {
-        if(commit) updateText(id, input.value);
-        else render();
-      };
-      input.addEventListener('keydown', (e) => {
-        if(e.key === 'Enter') finish(true);
-        if(e.key === 'Escape') finish(false);
-      });
-      input.addEventListener('blur', () => finish(true));
-      parent.replaceChild(input, textEl);
+      input.value = '';
       input.focus();
-      input.setSelectionRange(input.value.length, input.value.length);
     }
 
-    // Controles
-    function bindUI(){
-      const input = $('#newTask');
-      $('#addBtn').addEventListener('click', () => { addTask(input.value); input.value=''; input.focus(); });
-      input.addEventListener('keydown', (e) => {
-        if(e.key === 'Enter'){ addTask(input.value); input.value=''; }
-      });
-
-      // Filtros
-      $$('.chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          $$('.chip').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-selected','false'); });
-          chip.classList.add('active');
-          chip.setAttribute('aria-selected','true');
-          state.filter = chip.dataset.filter;
-          render();
-        });
-      });
-
-      // Marcar tudo
-      $('#toggleAll').addEventListener('click', () => {
-        const allCompleted = state.tasks.length > 0 && state.tasks.every(t => t.completed);
-        state.tasks = state.tasks.map(t => ({ ...t, completed: !allCompleted }));
-        save(); render();
-      });
-
-      // Limpar concluídas
-      $('#clearCompleted').addEventListener('click', () => {
-        const hadCompleted = state.tasks.some(t => t.completed);
-        if(!hadCompleted) return;
-        state.tasks = state.tasks.filter(t => !t.completed);
-        save(); render();
-      });
-    }
-
-    // Boot
-    load();
-    bindUI();
-    render();
+    addBtn.addEventListener('click', addTask);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addTask();
+    });
   </script>
 </body>
 </html>
-```
